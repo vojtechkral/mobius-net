@@ -9,27 +9,26 @@ function mobiusnet()
 	gui.screenSz = gui.screenSz(3:4);
 	gui.fig = figure('Position', [gui.screenSz/10 gui.screenSz*8/10]);
 	gui.settings = uipanel(gui.fig, 'Position', [0 0 .2 1],...
-			'Title', 'Input settings', 'BackgroundColor', 'none'); % bgcolor Screws title
+		'Title', 'Input settings', 'BackgroundColor', 'none',... % FIXME: bgcolor screws title
+		'ResizeFcn', @settingsResize); 
 
 	gui.tbl = uitable(gui.settings, 'Units', 'normalized',...
-			'Position', [0 .7 1 .3], 'Data', zeros(5, 2),...
-			'ColumnName', {'X', 'Y'},...
-			'RowName', {'O', 'A' 'B', 'Sa', 'Sb'},...
-	'ColumnWidth', {100, 200});    
+		'Position', [0 .7 1 .3], 'Data', zeros(5, 2),...
+		'ColumnName', {'X', 'Y'},...
+		'RowName', {'O', 'A' 'B', 'Sa', 'Sb'},...
+		'ColumnWidth', {100, 200});    
 	gui.pick = uicontrol(gui.settings, 'Style', 'pushbutton',...
-			'Units', 'normalized', 'Position', [.1 .65 .8 .04],...
-			'String', 'Pick coordinates');
+		'Units', 'normalized', 'Position', [.1 .65 .8 .04],...
+		'String', 'Pick coordinates', 'Callback', @pickCoords);
 	gui.render = uicontrol(gui.settings, 'Style', 'pushbutton',...
-			'Units', 'normalized', 'Position', [.1 .60 .8 .04],...
-			'String', 'Render Möbius Net');
+		'Units', 'normalized', 'Position', [.1 .60 .8 .04],...
+		'String', 'Render Möbius Net');
 	gui.save = uicontrol(gui.settings, 'Style', 'pushbutton',...
-			'Units', 'normalized', 'Position', [.1 .55 .8 .04],...
-			'String', 'Save image');
+		'Units', 'normalized', 'Position', [.1 .55 .8 .04],...
+		'String', 'Save image');
 	gui.save = uicontrol(gui.settings, 'Style', 'pushbutton',...
 		'Units', 'normalized', 'Position', [.1 .50 .8 .04],...
-		'String', 'Reset');
-		
-	% TODO: reset btn
+		'String', 'Reset', 'Callback', @resetAll);
 
 	axes('Position', [0.2 0 0.8 1]);
 	gui.axes = gca();
@@ -37,15 +36,13 @@ function mobiusnet()
 	axis(gui.axes, 'off', 'manual');
 	gui.axesSz = getpixelposition(gui.axes);
 	gui.axesSz = gui.axesSz(3:4);
-
-	%% Callbacks  % TODO: move into code above
-	set(gui.pick, 'Callback', @pickCoords);
-	set(gui.settings, 'ResizeFcn', @settingsResize);
-
+	
+	
 	%% Reset & wait for input
-		resetAll();
-		
-	%% Callback functions
+	resetAll();
+
+	
+	%% Event callback functions
 	function pickCoords(hO, evt)
 		resetAll();
 		O = getPoint('O', gui);
@@ -70,18 +67,17 @@ function mobiusnet()
 		set(gui.tbl, 'ColumnWidth', {width, width});
 	end
 
-	%% Resets all states to initial
-	function resetAll()
-			defaultData = [
-					0 0
-					0 1;
-					1 0;
-					0 0.1;
-					0.1 0
-				];
-			cla(gui.axes);
-			fill([0 1 1 0], [0 0 1 1], 'white');
-			set(gui.tbl, 'Data', defaultData);
+	function resetAll(hO, evt)
+		defaultData = [
+				0 0
+				0 1;
+				1 0;
+				0 0.1;
+				0.1 0
+			];
+		cla(gui.axes);
+		fill([0 1 1 0], [0 0 1 1], 'white');
+		set(gui.tbl, 'Data', defaultData);
 	end
 
 end
