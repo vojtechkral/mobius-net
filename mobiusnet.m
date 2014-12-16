@@ -26,7 +26,7 @@ function mobiusnet()
 		'String', 'Render Möbius Net', 'Callback',@render);
 	gui.save = uicontrol(gui.settings, 'Style', 'pushbutton',...
 		'Units', 'normalized', 'Position', [.1 .55 .8 .04],...
-		'String', 'Save image');
+		'String', 'Save image', 'Callback', @save);
 	gui.save = uicontrol(gui.settings, 'Style', 'pushbutton',...
 		'Units', 'normalized', 'Position', [.1 .50 .8 .04],...
 		'String', 'Reset', 'Callback', @resetAll);
@@ -72,6 +72,15 @@ function mobiusnet()
 
 	function render(h0, evt)
 		renderMobiusNet(gui);
+	end
+
+	function save(h0, evt)
+		fn = uiputfile('*.png', 'Save current image');
+		if fn
+			f = getframe(gui.axes);
+			img = frame2im(f);
+			imwrite(img, fn);
+		end
 	end
 
 	function resetAll(hO, evt)
