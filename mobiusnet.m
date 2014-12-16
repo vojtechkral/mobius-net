@@ -1,9 +1,9 @@
 function mobiusnet()
 	% mobiusnet - Renders a Mobius Net
 	%
-	% Renders a Möbius Net (a checkerboard in perspective) in a figure.
+	% Renders a Mobius Net (a checkerboard in perspective) in a figure.
 	% See http://mathworld.wolfram.com/MoebiusNet.html
-	% for more information on Möbius Nets.
+	% for more information on Mobius Nets.
 	% 
 	% An enclosing triangle as well as two starting points may be configured
 	% using mouse. Numerical coordinates of these points are displayed in
@@ -30,14 +30,14 @@ function mobiusnet()
 	gui.tbl = uitable(gui.settings, 'Units', 'normalized',...
 		'Position', [0 .7 1 .3], 'Data', zeros(5, 2),...
 		'ColumnName', {'X', 'Y'},...
-		'RowName', {'O', 'X' 'Y', 'x₁', 'y₁'},...
+		'RowName', {'O', 'X' 'Y', 'x1', 'y1'},...
 		'ColumnWidth', {100, 200});    
 	gui.pick = uicontrol(gui.settings, 'Style', 'pushbutton',...
 		'Units', 'normalized', 'Position', [.1 .65 .8 .04],...
 		'String', 'Pick coordinates', 'Callback', @pickCoords);
 	gui.render = uicontrol(gui.settings, 'Style', 'pushbutton',...
 		'Units', 'normalized', 'Position', [.1 .60 .8 .04],...
-		'String', 'Render Möbius Net', 'Callback', @render);
+		'String', 'Render Mobius Net', 'Callback', @render);
 	gui.save = uicontrol(gui.settings, 'Style', 'pushbutton',...
 		'Units', 'normalized', 'Position', [.1 .55 .8 .04],...
 		'String', 'Save image', 'Callback', @save);
@@ -81,10 +81,10 @@ function mobiusnet()
 		plotLine(O, Y);
 		plotLine(X, Y);
 
-		setStatus('Picking point x₁...');
+		setStatus('Picking point x1...');
 		x1 = getPoint('x1', gui, O, X);
 		plotLine(x1, Y);
-		setStatus('Picking point y₁...');
+		setStatus('Picking point y1...');
 		y1 = getPoint('y1', gui, O, Y);
 		plotLine(y1, X);
 
