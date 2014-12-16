@@ -9,7 +9,14 @@ function mobiusnet()
 	gui.screenSz = get(0, 'ScreenSize');
 	gui.screenSz = gui.screenSz(3:4);
 	gui.fig = figure('Position', [gui.screenSz/10 gui.screenSz*8/10]);
-	gui.settings = uipanel(gui.fig, 'Position', [0 0 .2 1],...
+	
+	gui.pstatus = uipanel(gui.fig, 'Position', [0 .9 .2 .1],...
+		'Title', 'Status', 'BackgroundColor', 'none');
+	gui.status = uicontrol(gui.pstatus, 'Style', 'text',...
+		'Units', 'normalized', 'Position', [.1 .1 .8 .8],...
+		'BackgroundColor', get(gui.fig, 'Color'));
+	
+	gui.settings = uipanel(gui.fig, 'Position', [0 0 .2 .9],...
 		'Title', 'Input settings', 'BackgroundColor', 'none',... % FIXME: bgcolor screws title
 		'ResizeFcn', @settingsResize); 
 
@@ -43,25 +50,39 @@ function mobiusnet()
 	resetAll();
 
 	
-	%% Event callback functions
+	%% Event callback functions & GUI utils
+	function setStatus(status)
+		if nargin > 0
+			set(gui.status, 'String', status);
+		else
+			set(gui.status, 'String', 'Ready...');
+		end
+	end
+	
 	function pickCoords(hO, evt)
 		% FIXME: inform which point is being picked 
 		%	       (label / status bar / row color)
 		resetAll();
+		setStatus('Picking point O...');
 		O = getPoint('O', gui);
+		setStatus('Picking point X...');
 		X = getPoint('X', gui);
 		plotLine(O, X);
+		setStatus('Picking point Y...');
 		Y = getPoint('Y', gui);
 		plotLine(O, Y);
 		plotLine(X, Y);
 
+		setStatus('Picking point x₁...');
 		x1 = getPoint('x1', gui, O, X);
 		plotLine(x1, Y);
+		setStatus('Picking point y₁...');
 		y1 = getPoint('y1', gui, O, Y);
 		plotLine(y1, X);
 
 		data = [O; X; Y; x1; y1];
 		set(gui.tbl, 'Data', data);
+		setStatus();
 	end
 
 	function settingsResize(hO, evt)
@@ -71,7 +92,16 @@ function mobiusnet()
 	end
 
 	function render(h0, evt)
+		% Set status & disable uicontrols while rendering:
+		setStatus('Rendering, please wait...');
+		controls = findall(gui.settings, 'Type', 'uicontrol');
+		set(controls, 'Enable', 'Off');
+		drawnow();
+		
 		renderMobiusNet(gui);
+		
+		% Reenable uicontrols:
+		set(controls, 'Enable', 'On');
 	end
 
 	function save(h0, evt)
@@ -95,6 +125,7 @@ function mobiusnet()
 		cla(gui.axes);
 		fill([0 1 1 0], [0 0 1 1], 'white');
 		set(gui.tbl, 'Data', defaultData);
+		setStatus();
 	end
 
 end
@@ -172,6 +203,8 @@ end
 
 %% Mobius net algorithm
 function renderMobiusNet(gui)
+		
+
 		% Clear axes:
 		cla(gui.axes);
 		fill([0 1 1 0], [0 0 1 1], 'white');
