@@ -110,6 +110,7 @@ function mobiusnet()
 		
 		% Reenable uicontrols:
 		set(controls, 'Enable', 'On');
+		setStatus();
 	end
 
 	function save(h0, evt)
