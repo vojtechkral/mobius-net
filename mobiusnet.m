@@ -1,5 +1,3 @@
-% FIXME: status
-
 function mobiusnet()
 	% mobiusnet - Renders a Mobius Net
 	% FIXME: doc
@@ -13,11 +11,10 @@ function mobiusnet()
 	gui.pstatus = uipanel(gui.fig, 'Position', [0 .9 .2 .1],...
 		'Title', 'Status', 'BackgroundColor', 'none');
 	gui.status = uicontrol(gui.pstatus, 'Style', 'text',...
-		'Units', 'normalized', 'Position', [.1 .1 .8 .8],...
-		'BackgroundColor', get(gui.fig, 'Color'));
+		'Units', 'normalized', 'Position', [.1 .1 .8 .8]);
 	
 	gui.settings = uipanel(gui.fig, 'Position', [0 0 .2 .9],...
-		'Title', 'Input settings', 'BackgroundColor', 'none',... % FIXME: bgcolor screws title
+		'Title', 'Input settings', 'BackgroundColor', 'none',...
 		'ResizeFcn', @settingsResize); 
 
 	gui.tbl = uitable(gui.settings, 'Units', 'normalized',...
@@ -45,6 +42,9 @@ function mobiusnet()
 	gui.axesSz = getpixelposition(gui.axes);
 	gui.axesSz = gui.axesSz(3:4);
 	
+	textctrls = findall([gui.settings gui.pstatus],...
+		'Type', 'uicontrol', 'Style', 'text');
+	set(textctrls, 'BackgroundColor', get(gui.fig, 'Color'));
 	
 	%% Reset & wait for input
 	resetAll();
@@ -60,8 +60,6 @@ function mobiusnet()
 	end
 	
 	function pickCoords(hO, evt)
-		% FIXME: inform which point is being picked 
-		%	       (label / status bar / row color)
 		resetAll();
 		setStatus('Picking point O...');
 		O = getPoint('O', gui);
@@ -94,7 +92,7 @@ function mobiusnet()
 	function render(h0, evt)
 		% Set status & disable uicontrols while rendering:
 		setStatus('Rendering, please wait...');
-		controls = findall(gui.settings, 'Type', 'uicontrol');
+		controls = findall(gui.settings, 'Type', 'uicontrol', 'Style', 'pushbutton');
 		set(controls, 'Enable', 'Off');
 		drawnow();
 		
