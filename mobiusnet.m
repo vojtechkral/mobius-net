@@ -1,6 +1,15 @@
 function mobiusnet()
 	% mobiusnet - Renders a Mobius Net
-	% FIXME: doc
+	%
+	% Renders a Möbius Net (a checkerboard in perspective) in a figure.
+	% See http://mathworld.wolfram.com/MoebiusNet.html
+	% for more information on Möbius Nets.
+	% 
+	% An enclosing triangle as well as two starting points may be configured
+	% using mouse. Numerical coordinates of these points are displayed in
+	% a table on the left side of the figure.
+	% The resulting picture can be saved into a png file.
+	%
 
 	%% setup GUI
 	gui = {};
@@ -200,9 +209,11 @@ function point = lineIntersect(a1, a2, b1, b2)
 end
 
 %% Mobius net algorithm
+% Rendering is done in "waves" - each wave is a set of
+% quadrilaterals with the same distance from the origin point (O).
+% Rendering stops once the distance between waves becomes insignificant.
+% Each wave reuses data from the previous one via a context variable.
 function renderMobiusNet(gui)
-		
-
 		% Clear axes:
 		cla(gui.axes);
 		fill([0 1 1 0], [0 0 1 1], 'white');
