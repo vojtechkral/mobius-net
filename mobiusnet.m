@@ -115,7 +115,18 @@ function point = getPoint(label, gui, lA, lB)
 
 	if nargin == 4
 		point = projectOnLine(point, lA, lB);
-		% FIXME: if point is outside line, set default?
+
+		% Check if the point is too close to lA or lB:
+		threshold = 0.05;
+		if norm(lA - point) < threshold
+			line = lB - lA;
+			lnorm = norm(line);
+			point = lA + line/lnorm * lnorm * threshold;
+		elseif norm(lB - point)< threshold
+			line = lB - lA;
+			lnorm = norm(line);
+			point = lB + line/lnorm * lnorm * threshold;
+		end
 	end
 	
 	w = gui.axesSz(1);
