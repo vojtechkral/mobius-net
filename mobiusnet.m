@@ -75,18 +75,18 @@ function mobiusnet()
 		O = getPoint('O', gui);
 		setStatus('Picking point X...');
 		X = getPoint('X', gui);
-		plotLine(O, X);
+		plotLine(O, X, 'blue');
 		setStatus('Picking point Y...');
 		Y = getPoint('Y', gui);
-		plotLine(O, Y);
-		plotLine(X, Y);
+		plotLine(O, Y, 'blue');
+		plotLine(X, Y, 'blue');
 
 		setStatus('Picking point x1...');
 		x1 = getPoint('x1', gui, O, X);
-		plotLine(x1, Y);
+		plotLine(x1, Y, 'blue');
 		setStatus('Picking point y1...');
 		y1 = getPoint('y1', gui, O, Y);
-		plotLine(y1, X);
+		plotLine(y1, X, 'blue');
 
 		data = [O; X; Y; x1; y1];
 		set(gui.tbl, 'Data', data);
@@ -193,14 +193,14 @@ function point = getPoint(label, gui, lA, lB)
 	text(x + 2*offx, y, label);
 end
 
-function plotLine(A, B)
+function plotLine(A, B, color)
 	AB = [A;B];
-	line(AB(:,1), AB(:,2));
+	line(AB(:,1), AB(:,2), 'Color', color);
 end
 
 function fillQuad(points, color)
 	% shorthand for easier quadrilateral polygon fill
-	fill(points(:,1), points(:,2), color);
+	fill(points(:,1), points(:,2), color, 'LineStyle', 'none');
 end
 
 function point = lineIntersect(a1, a2, b1, b2)
@@ -254,6 +254,10 @@ function renderMobiusNet(gui)
 		while ctx.dist > threshold
 			ctx = mobiusWave(ctx);
 		end
+		
+		% Draw an outline:
+		plotLine(ctx.O, ctx.xs(end,:), ctx.colors(1,:));
+		plotLine(ctx.O, ctx.ys(end,:), ctx.colors(1,:));
 end
 
 function ctx = mobiusWave(ctx)
